@@ -1,7 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Hash from '@ioc:Adonis/Core/Hash'
 
-//import User from 'App/Models/User'
+import User from 'App/Models/User'
 
 import { ProfileValidator, PasswordValidator } from 'App/Validators/User'
 
@@ -46,7 +46,14 @@ export default class UserController {
     return token
   }
 
-  public async index({}: HttpContextContract) {}
+  public async index({ request }: HttpContextContract) {
+    const page = request.input('page', 1)
+    const limit = request.input('limit', 10)
+
+    const users = await User.query().orderBy('id').paginate(page, limit)
+
+    return users
+  }
 
   public async store({}: HttpContextContract) {}
 
