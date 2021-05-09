@@ -3,7 +3,11 @@ import Hash from '@ioc:Adonis/Core/Hash'
 
 import User from 'App/Models/User'
 
-import { ProfileValidator, PasswordValidator, StoreValidator } from 'App/Validators/User'
+import {
+  ProfileValidator,
+  PasswordValidator,
+  StoreValidator
+} from 'App/Validators/User'
 
 export default class UserController {
   public async profile({ auth }: HttpContextContract) {
@@ -32,7 +36,7 @@ export default class UserController {
       return response.badRequest({ error: { message: 'Invalid credentials' } })
     }
 
-    user.password = password;
+    user.password = password
     await user.save()
 
     // Revoke tokens
@@ -63,7 +67,16 @@ export default class UserController {
     return user
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ response, params }: HttpContextContract) {
+    try {
+      const user = await User.findOrFail(params.id)
+      return user
+      
+    } catch (err) {
+      return response.badRequest({ error: "User not found or invalid" })
+    }
+
+  }
 
   public async update({}: HttpContextContract) {}
 
