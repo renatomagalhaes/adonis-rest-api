@@ -6,7 +6,8 @@ import User from 'App/Models/User'
 import {
   ProfileValidator,
   PasswordValidator,
-  StoreValidator
+  StoreValidator,
+  UpdateValidator
 } from 'App/Validators/User'
 
 export default class UserController {
@@ -53,7 +54,6 @@ export default class UserController {
   public async index({ request }: HttpContextContract) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 10)
-
     const users = await User.query().orderBy('id').paginate(page, limit)
 
     return users
@@ -61,7 +61,6 @@ export default class UserController {
 
   public async store({ request }: HttpContextContract) {
     const data = await request.validate(StoreValidator)
-
     const user = await User.create(data)
 
     return user
@@ -77,7 +76,20 @@ export default class UserController {
     }
   }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ request, response, params }: HttpContextContract) {
+    const data = await request.validate(UpdateValidator)
+    
+    try {
+      const user = await User.findOrFail(params.id)
+      user.merge(data)
+      await user.save()
+
+      return user
+      
+    } catch (err) {
+      return response.badRequest({ error: "User not found or invalid" })
+    }
+  }
 
   public async destroy({ response, params }: HttpContextContract) {
     try {
