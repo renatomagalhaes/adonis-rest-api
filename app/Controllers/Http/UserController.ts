@@ -71,14 +71,21 @@ export default class UserController {
     try {
       const user = await User.findOrFail(params.id)
       return user
-      
+
     } catch (err) {
       return response.badRequest({ error: "User not found or invalid" })
     }
-
   }
 
   public async update({}: HttpContextContract) {}
 
-  public async destroy({}: HttpContextContract) {}
+  public async destroy({ response, params }: HttpContextContract) {
+    try {
+      const user = await User.findOrFail(params.id)
+      await user.delete()
+      
+    } catch (err) {
+      return response.badRequest({ error: "User not found or invalid" })
+    }
+  }
 }
