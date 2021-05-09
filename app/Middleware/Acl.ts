@@ -5,7 +5,7 @@ export default class Acl {
     const user = await auth.authenticate()
 
     if(!allowedRoles.includes(user.role)) {
-      return response.unauthorized({ error: { message: 'access denied' } })
+      return response.unauthorized({ error: { message: 'Access denied' } })
     }
 
     await next()
