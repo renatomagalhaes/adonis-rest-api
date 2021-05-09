@@ -4,11 +4,20 @@ import {
   column,
   beforeSave,
   BaseModel,
+  computed
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number
+
+  @column()
+  public name: string
+
+  @computed()
+  public get firstName() {
+    return this.name.split(' ')[0]
+  }
 
   @column()
   public email: string
@@ -17,12 +26,19 @@ export default class User extends BaseModel {
   public password: string
 
   @column()
+  public role: 'user' | 'support' | 'admin'
+
+  @column()
   public rememberMeToken?: string
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt', serialize: (value: DateTime) => {
+    return value.toFormat('yyyy-MM-dd HH:mm:ss')
+  } })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: 'updatedAt', serialize: (value: DateTime) => {
+    return value.toFormat('yyyy-MM-dd HH:mm:ss')
+  } })
   public updatedAt: DateTime
 
   @beforeSave()
