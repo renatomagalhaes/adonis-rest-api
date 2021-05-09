@@ -1,2 +1,2 @@
-# adonis-rest-api
-Adonis API application - V5
+# Adonis Rest API
+- Adonis API application - V5
